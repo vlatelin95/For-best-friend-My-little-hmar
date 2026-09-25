@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ДАРОВА БАНДИТ</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+
+    background:
+        repeating-conic-gradient(
+            from 0deg,
+            #ff00ff 0deg 15deg,
+            #00ffff 15deg 30deg,
+            #ffff00 30deg 45deg,
+            #ff0000 45deg 60deg
+        );
+
+    animation: backgroundMove 1.5s linear infinite;
+}
+
+/* Движение безумного фона */
+@keyframes backgroundMove {
+    from {
+        background-position: 0 0;
+        filter: hue-rotate(0deg);
+    }
+    to {
+        background-position: 300px 300px;
+        filter: hue-rotate(360deg);
+    }
+}
+
+/* Огромный текст сверху */
+.title {
+    position: absolute;
+    top: 25px;
+    width: 100%;
+    text-align: center;
+
+    font-size: clamp(35px, 9vw, 100px);
+    font-weight: 900;
+    color: white;
+
+    text-shadow:
+        5px 5px 0 red,
+        -5px -5px 0 blue,
+        8px 8px 20px black;
+
+    animation: crazyText 0.5s infinite alternate;
+}
+
+@keyframes crazyText {
+    from {
+        transform: rotate(-3deg) scale(1);
+    }
+    to {
+        transform: rotate(3deg) scale(1.08);
+    }
+}
+
+/* Центральная кнопка */
+button {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    padding: 35px 65px;
+
+    font-size: clamp(28px, 7vw, 70px);
+    font-weight: 1000;
+
+    color: #fff;
+    background: linear-gradient(
+        45deg,
+        red,
+        orange,
+        yellow,
+        lime,
+        cyan,
+        blue,
+        purple
+    );
+
+    background-size: 500% 500%;
+
+    border: 8px solid black;
+    border-radius: 30px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 0 20px white,
+        0 0 50px black,
+        15px 15px 0 black;
+
+    animation:
+        rainbow 1s linear infinite,
+        buttonCrazy 0.7s infinite alternate;
+}
+
+@keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes buttonCrazy {
+    from {
+        transform: translate(-50%, -50%) rotate(-4deg) scale(1);
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(4deg) scale(1.15);
+    }
+}
+
+button:active {
+    transform: translate(-50%, -50%) scale(0.8);
+}
+
+/* Летающий мусор */
+.emoji {
+    position: absolute;
+    font-size: 60px;
+    user-select: none;
+    pointer-events: none;
+
+    animation:
+        fly 4s linear infinite,
+        spin 1s linear infinite;
+}
+
+@keyframes fly {
+    0% {
+        transform: translate(0, 100vh);
+    }
+
+    100% {
+        transform: translate(100vw, -100vh);
+    }
+}
+
+@keyframes spin {
+    from {
+        rotate: 0deg;
+    }
+
+    to {
+        rotate: 360deg;
+    }
+}
+
+/* Надпись после нажатия */
+#message {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0,0,0,0.85);
+
+    color: white;
+
+    justify-content: center;
+    align-items: center;
+
+    flex-direction: column;
+
+    text-align: center;
+
+    z-index: 999;
+}
+
+#message h1 {
+    font-size: clamp(45px, 12vw, 120px);
+
+    color: yellow;
+
+    text-shadow:
+        5px 5px red,
+        -5px -5px blue;
+
+    animation: crazyText 0.3s infinite alternate;
+}
+
+#message p {
+    margin-top: 25px;
+    font-size: 25px;
+}
+
+/* Вспышка */
+.flash {
+    position: fixed;
+    inset: 0;
+    background: white;
+    opacity: 0;
+
+    pointer-events: none;
+
+    z-index: 1000;
+}
+
+.flash.active {
+    animation: flash 0.25s;
+}
+
+@keyframes flash {
+    0% { opacity: 0; }
+    30% { opacity: 1; }
+    100% { opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="title">🚨 ВНИМАНИЕ 🚨</div>
+
+<button onclick="bandit()">ДАРОВА БАНДИТ</button>
+
+<div id="message">
+    <h1>БАНДИТ ОБНАРУЖЕН 🗿</h1>
+    <p>Система больше не может это терпеть</p>
+    <p>💀💀💀💀💀</p>
+</div>
+
+<div class="flash" id="flash"></div>
+
+<script>
+
+/* Летающие абсолютно ненужные предметы */
+const emojis = [
+    "🗿",
+    "💀",
+    "🗿",
+    "🔥",
+    "💩",
+    "😭",
+    "🦍",
+    "🍌",
+    "🚨",
+    "💯",
+    "🤨",
+    "👺",
+    "🐒",
+    "🤑"
+];
+
+for (let i = 0; i < 35; i++) {
+
+    const emoji = document.createElement("div");
+
+    emoji.className = "emoji";
+
+    emoji.textContent =
+        emojis[Math.floor(Math.random() * emojis.length)];
+
+    emoji.style.left = Math.random() * 100 + "vw";
+
+    emoji.style.top = Math.random() * 100 + "vh";
+
+    emoji.style.animationDuration =
+        (2 + Math.random() * 5) + "s";
+
+    emoji.style.animationDelay =
+        Math.random() * 3 + "s";
+
+    document.body.appendChild(emoji);
+}
+
+/* Нажатие на кнопку */
+function bandit() {
+
+    const message = document.getElementById("message");
+    const flash = document.getElementById("flash");
+
+    flash.classList.add("active");
+
+    setTimeout(() => {
+        flash.classList.remove("active");
+    }, 300);
+
+    message.style.display = "flex";
+
+    /* Тряска страницы */
+    document.body.animate(
+        [
+            { transform: "translate(0,0)" },
+            { transform: "translate(15px,-15px)" },
+            { transform: "translate(-15px,15px)" },
+            { transform: "translate(10px,10px)" },
+            { transform: "translate(0,0)" }
+        ],
+        {
+            duration: 500,
+            iterations: 5
+        }
+    );
+}
+
+/* Случайные вспышки */
+setInterval(() => {
+
+    if (Math.random() > 0.7) {
+
+        const flash = document.getElementById("flash");
+
+        flash.classList.add("active");
+
+        setTimeout(() => {
+            flash.classList.remove("active");
+        }, 250);
+    }
+
+}, 1000);
+
+</script>
+
+</body>
+</html>
